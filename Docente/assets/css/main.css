@@ -1,0 +1,113 @@
+@font-face {
+  font-family: 'eraser';
+  src: url('myfont.woff') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+   url('EraserRegular.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
+a{
+  color: white !important;
+}
+
+body, html {
+    height: 100%;
+}
+
+.er{
+	font-family: 'eraser';
+	color: white;
+}
+.bg {
+    background-image: url('../media/wpp-main.jpg');
+    background-repeat: no-repeat;
+    background-size:100%;
+    bottom: 0;
+    color: black;
+    left: 0;
+    overflow: auto;
+    padding: 3em;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    background-size: cover;
+}
+
+.formulario{
+	width: 40%;
+	text-align: center;
+     margin-left: 25%;
+
+     margin-top: 30vh;
+}
+
+.formulario input{
+	margin-top:2vh;
+}
+.titulo{
+  margin: 5vh;
+}
+
+.bg-2 {
+      background-image: url('../media/quadro.jpg');
+    background-repeat: repeat-y;
+    background-size:100%;
+    bottom: 0;
+    color: black;
+    left: 0;
+    overflow: auto;
+    padding: 3em;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    background-size: cover;
+}
+
+
+.form{
+
+  width: 40%;
+  text-align: center;
+     margin-left: 25%;
+
+     margin-top: 30vh;
+}
+
+.form input{
+  margin:1vh;
+}
+
+
+
+.tabela{
+
+  width: 80%;
+  text-align: center;
+     margin-left: 10%;
+
+     margin-top: 10vh;
+}
+
+
+
+.tabela table{
+  color: white;
+}
+
+.esp-modal{
+  margin-top: 5%;
+}
+
+@media (max-width: 768px) {
+
+	.formulario{
+		width: 50%;
+	}
+
+
+  .bg{
+        background-image: url('../media/quadro.jpg');
+      }
+
+
+}
