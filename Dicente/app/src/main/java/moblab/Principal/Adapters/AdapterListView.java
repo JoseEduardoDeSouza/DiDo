@@ -1,6 +1,8 @@
-package moblab.exemplolista;
+package moblab.Principal.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.List;
+
+import moblab.Principal.Entidades.ItemListView;
+import moblab.Principal.R;
 
 /**
  * Created by charles on 15/07/16.
@@ -55,6 +60,13 @@ public class AdapterListView extends BaseAdapter {
         }
 
         ItemListView item = listaItens.get(i);
+        if (item.isFile()){
+            itemSuporte.nomeView.setGravity(Gravity.RIGHT);
+            itemSuporte.nomeView.setTextColor(Color.GREEN);
+            itemSuporte.nomeView.setTextSize(8);
+            itemSuporte.textoView.setGravity(Gravity.RIGHT);
+            itemSuporte.textoView.setTextSize(8);
+        }
         itemSuporte.nomeView.setText(item.getNome());
         itemSuporte.textoView.setText(item.getTexto());
 

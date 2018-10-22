@@ -1,16 +1,14 @@
-package moblab.exemplolista;
+package moblab.Principal.Activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -27,7 +25,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static moblab.exemplolista.MainActivity.msgsMC;
+import moblab.Principal.Adapters.AdapterTurmaListView;
+import moblab.Principal.Entidades.TurmaListView;
+import moblab.Principal.R;
 
 public class TurmaActivity extends AppCompatActivity {
     public static List<TurmaListView> turmas = new ArrayList<TurmaListView>();;

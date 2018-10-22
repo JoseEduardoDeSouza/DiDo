@@ -10,13 +10,6 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.github.kittinunf.fuel.Fuel;
-import com.github.kittinunf.fuel.core.FuelError;
-import com.github.kittinunf.fuel.core.Request;
-import com.github.kittinunf.fuel.core.Response;
-import com.github.kittinunf.result.Result;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -26,10 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import kotlin.Triple;
-import moblab.exemplolista.ItemListView;
-import moblab.exemplolista.MainActivity;
-import moblab.exemplolista.TaskReceberMSGServer;
+import moblab.Principal.Entidades.ItemListView;
+import moblab.Principal.Activity.MainActivity;
 
 /**
  * Created by charles on 14/08/16.

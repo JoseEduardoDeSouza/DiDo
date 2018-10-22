@@ -54,15 +54,15 @@ class SistemaController{
     $local = "arquivos"."/". $ano;
     $nome_antigo= explode(".",$arquivo["name"]);
     $novo_nome = $siape."_".$nome.".".$nome_antigo[1];
-    $local_novo = "arquivos"."/".$ano."/".$novo_nome;
+    $local_novo = "arquivos"."/".$ano."/".str_replace(" ","",$novo_nome);
 
     if (!file_exists($local)) {
         mkdir($local, 0775,true);
     }
 
-    if (move_uploaded_file($arquivo["tmp_name"], $local."/".$novo_nome)) {
+    if (move_uploaded_file($arquivo["tmp_name"], $local."/".str_replace(" ","",$novo_nome))) {
       chmod($local."/".$novo_nome, 0666);
-      $file = new ArquivoEntity(null,$siape,$ano,$nome,$local_novo);
+      $file = new ArquivoEntity(null,$siape,$ano,str_replace(" ","",$novo_nome),$local_novo);
       if ($this->arquivoModel->cadastrar($file)) {
         include "showTableFile.php";
         $table =  GetTable($siape);
@@ -73,9 +73,10 @@ class SistemaController{
       }
     }
   }
-  public function obter($params){
-    if ($this->arquivoModel->existencia($params["turma_id"])) {
-      $arquivos = $this->arquivoModel->obterPorTurma($params["turma_id"]);
+  public function obterArquivos($params){
+    if ($this->arquivoModel->existencia($params["turma"])) {
+
+      $arquivos = $this->arquivoModel->obterPorTurma($params["turma"]);
       $retorno = array();
       foreach ($arquivos as $arquivo){
         $arqs = ["local"=> $arquivo->getLocal(), "siape"=> $arquivo->getDocenteSiape() , "nome"=> $arquivo->getNome()];

@@ -1,4 +1,4 @@
-package moblab.exemplolista;
+package moblab.Principal.Entidades;
 
 /**
  * Created by charles on 15/07/16.
@@ -7,6 +7,16 @@ public class ItemListView {
 
     private String texto;
     private String nome;
+    private boolean file = false;
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public ItemListView(String texto, String nome) {
         this.texto = texto;
@@ -18,7 +28,13 @@ public class ItemListView {
         this.nome = "";
     }
 
+    public boolean isFile() {
+        return file;
+    }
 
+    public void setFile(boolean file) {
+        this.file = file;
+    }
 
     public String getTexto() {
         return texto;

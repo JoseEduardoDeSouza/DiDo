@@ -1,4 +1,4 @@
-package moblab.exemplolista;
+package moblab.Principal.Entidades;
 
 public class TurmaListView {
     private String id,ano,curso;

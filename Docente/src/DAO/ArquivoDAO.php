@@ -41,14 +41,14 @@
     }
 
       public function obterPorTurma($turma_id){
-        $sql = "select id,docente_siape,local,nome from arquivo where turma_id = $turma_id;";
+        $sql = "select id,local,arquivo.nome as nomeArquivo,docente.nomeCompleto as nomeDocente from arquivo,docente where turma_id = $turma_id and docente_siape = docente.siape;";
 
         $res = $this->selecionar($sql);
         $retorno = array();
 
         if ($res->num_rows > 0) {
           while($row = $res->fetch_assoc()) {
-            $arq = new ArquivoEntity($row["id"],$row["docente_siape"],$turma_id,$row["nome"],$row["local"]);
+            $arq = new ArquivoEntity($row["id"],$row["nomeDocente"],$turma_id,$row["nomeArquivo"],$row["local"]);
     				array_push($retorno, $arq);
     			}
         }

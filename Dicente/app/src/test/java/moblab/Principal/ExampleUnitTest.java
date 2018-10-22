@@ -1,4 +1,4 @@
-package moblab.exemplolista;
+package moblab.Principal;
 
 import org.junit.Test;
 

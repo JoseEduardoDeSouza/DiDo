@@ -1,34 +1,37 @@
-package moblab.exemplolista;
+package moblab.Principal.Activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
+import android.app.DownloadManager;
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.app.NotificationCompat;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.kittinunf.fuel.Fuel;
@@ -43,22 +46,36 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import kotlin.Triple;
+import moblab.Principal.Adapters.AdapterListView;
+import moblab.Principal.Conexoes.ConexaoCliente;
+import moblab.Principal.Entidades.Arquivo;
+import moblab.Principal.Entidades.ItemListView;
+import moblab.Principal.R;
+import moblab.Principal.Conexoes.TaskReceberMSGServer;
 
 public class MainActivity extends AppCompatActivity {
 
     public static ListView listaView; // Este e a lista de itens do layout.
     public static List<ItemListView> listaItensView; // Essa e a lista de itens que contem as mensagens.
+    public static List<Arquivo> arquivos;
     public static AdapterListView adaptador; // Essa e o adaptador da lista do layout.
     public String nome = "SemNome"; // Essa variavel contem o nome do usuario.
     public String IP = "http://192.168.1.107:8080";
@@ -73,6 +90,202 @@ public class MainActivity extends AppCompatActivity {
     private GerenciaRedeD2D gerenciaRedeD2D = null;
     public TaskReceberMSGServer taskReceberMSGServer = null;
     public List<ContataCliente> ObterclientesAtuais = new ArrayList<>();
+
+
+
+    private DownloadManager mgr=null;
+    private long lastDownload=-1L;
+    private String downloadDirectory = "DiDo/arquivos/";
+
+    // Metodo inicial da aplicacao. Tudo comeca aqui. Configuracao do layout inicial e
+    // chamada do metodo para configurar o nome, e configuracao da lista de mensagens.
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        givePermission();
+
+
+        checkSystemWritePermission();
+        Intent intent = getIntent();
+        turmaId =intent.getStringExtra("turma");
+        obterNome();
+
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
+
+        this.listaView = (ListView) findViewById(R.id.lista_itens);
+
+        this.listaItensView = new ArrayList<ItemListView>();
+        this.arquivos = new ArrayList<Arquivo>();
+
+        this.adaptador = new AdapterListView(this, this.listaItensView);
+
+        this.listaView.setAdapter(this.adaptador);
+
+        ((EditText) findViewById(R.id.editText)).setHint("Mensagem");
+
+        checarPermissoes();
+
+        new ReceberMSG().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new ObterMensagensTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        gerenciaRedeD2D = new GerenciaRedeD2D(MainActivity.this);
+        gerenciaRedeD2D.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        clientesAtuais.add(getMyIP());
+
+        iniciaObterClientes();
+
+        //obtém urls
+        new GetFilesURLS().execute(IP+"/sistema/obterArquivos?turma="+turmaId);
+
+        listaView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ItemListView item = (ItemListView) adapterView.getItemAtPosition(i);
+                if (statusArquivo(item.getNome())){
+                    Log.d("existe","foi");
+                }else{
+                    if (item.isFile()){
+                        String urlDown = item.getUrl();
+                        String filename = item.getNome();
+                        startDownload(urlDown,filename);
+                    }
+                }
+            }
+        });
+
+
+        mgr=(DownloadManager)getSystemService(DOWNLOAD_SERVICE);
+        registerReceiver(onComplete,
+                new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        registerReceiver(onNotificationClick,
+                new IntentFilter(DownloadManager.ACTION_NOTIFICATION_CLICKED));
+
+    }
+    public boolean statusArquivo(String name){
+        String path = Environment.getExternalStorageDirectory()+ "/" + downloadDirectory + turmaId;
+        Log.d("Files", "Path: " + path);
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+        Log.d("Files", "Size: "+ files.length);
+        for (int i = 0; i < files.length; i++){
+            Log.d("Files", "FileName:" + files[i].getName());
+        }
+        return false;
+    }
+    //Download
+
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+
+        unregisterReceiver(onComplete);
+        unregisterReceiver(onNotificationClick);
+    }
+
+    public void startDownload(String url,String filename){
+        createDirectory();
+
+        Uri uri=Uri.parse(url);
+
+        Environment
+                .getExternalStoragePublicDirectory(Environment.getExternalStorageDirectory()
+                        + "/" + downloadDirectory)
+                .mkdirs();
+
+        lastDownload=
+                mgr.enqueue(new DownloadManager.Request(uri)
+                        .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI |
+                                DownloadManager.Request.NETWORK_MOBILE)
+                        .setAllowedOverRoaming(false)
+                        .setTitle("Download")
+                        .setDescription("Realizando Download")
+                        .setDestinationInExternalPublicDir(Environment.getExternalStorageState()
+                                + "/" + downloadDirectory+turmaId, filename));
+
+    }
+
+
+    BroadcastReceiver onComplete = new BroadcastReceiver(){
+        public void onReceive(Context ctxt, Intent intent){
+            //openFile();
+        }
+    };
+
+    BroadcastReceiver onNotificationClick = new BroadcastReceiver(){
+        public void onReceive(Context ctxt, Intent intent){
+            Toast.makeText(ctxt, "Ummmm...hi!", Toast.LENGTH_LONG).show();
+        }
+    };
+
+    //a partir da versão 6.0 do Android, pede permissão em
+    //em tempo de execução
+    public void givePermission(){
+        if(!(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+        if(!(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+    }
+
+    public void openFile(){
+        File path = Environment.getExternalStoragePublicDirectory(Environment.getExternalStorageDirectory()
+                + "/" + downloadDirectory);
+        File file = new File(path, "test.pdf");
+
+        Intent install = new Intent(Intent.ACTION_VIEW);
+        install.setDataAndType(Uri.fromFile(file), "application/pdf");
+        Intent intent = Intent.createChooser(install, "abrir arquivo");
+
+        try {
+            startActivity(intent);
+        }catch (ActivityNotFoundException e){
+        }
+    }
+
+    public void createDirectory(){
+        File apkStorage = new File(Environment.getExternalStorageDirectory()
+                + "/" + downloadDirectory + turmaId+"/");
+
+        if(!apkStorage.exists()){
+            if(apkStorage.mkdir()){
+                Log.d("existe","esx");
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -93,6 +306,82 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+    //Download de Arquivo
+
+
+    private class GetFilesURLS extends AsyncTask<String, Integer, String> {
+        protected String doInBackground(String... urls) {
+            URL url = null;
+            String content = "";
+            try {
+                Log.d("url_arquivo",urls[0]);
+                url = new URL(urls[0]);
+
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(5000);
+                connection.connect();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line;
+                while ((line = rd.readLine()) != null) {
+                    content += line + "\n";
+                }
+            } catch (MalformedURLException e) {
+                Log.d("requisi1",e.toString());
+                e.printStackTrace();
+            } catch (ProtocolException e) {
+                Log.d("requisi2",e.toString());
+                e.printStackTrace();
+            } catch (IOException e) {
+                Log.d("requisi3",e.toString());
+                e.printStackTrace();
+            }
+
+            return content;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+        }
+
+        protected void onPostExecute(String result) {
+            Log.d("url_arquivo",result);
+
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                for (int i = 0; i < jsonarray.length(); i++) {
+                    JSONObject jsonobject = jsonarray.getJSONObject(i);
+                    String local = jsonobject.getString("local");
+                    String siape = jsonobject.getString("siape");
+                    String nome = jsonobject.getString("nome");
+                    arquivos.add(new Arquivo(local,siape,nome));
+
+                    ItemListView novoItem = new ItemListView("ARQUIVO DE "+siape, nome);
+                    novoItem.setFile(true);
+                    novoItem.setUrl(IP+"/"+local);
+                    listaItensView.add(novoItem);
+
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adaptador = new AdapterListView(MainActivity.this, listaItensView);
+                            listaView.setAdapter(adaptador);
+                            listaView.setSelection(adaptador.getCount() - 1);
+                        }//public void run() {
+                    });
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.d("url_arquivo",e.toString());
+            }
+
+
+
+        }
+
+
     }
 
 
@@ -312,48 +601,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Metodo inicial da aplicacao. Tudo comeca aqui. Configuracao do layout inicial e
-    // chamada do metodo para configurar o nome, e configuracao da lista de mensagens.
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        checkSystemWritePermission();
-        Intent intent = getIntent();
-        turmaId =intent.getStringExtra("turma");
-        obterNome();
-
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
-
-
-        this.listaView = (ListView) findViewById(R.id.lista_itens);
-
-        this.listaItensView = new ArrayList<ItemListView>();
-
-        this.adaptador = new AdapterListView(this, this.listaItensView);
-
-        this.listaView.setAdapter(this.adaptador);
-
-        ((EditText) findViewById(R.id.editText)).setHint("Mensagem");
-
-        checarPermissoes();
-
-        new ReceberMSG().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        new ObterMensagensTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-        gerenciaRedeD2D = new GerenciaRedeD2D(MainActivity.this);
-        gerenciaRedeD2D.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-        clientesAtuais.add(getMyIP());
-
-        iniciaObterClientes();
-
-        //iniciarServerTethering();
-    }
 
     public void iniciaObterClientes() {
         new ObterClientesTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
