@@ -30,5 +30,14 @@
       }
       return false;
     }
+    function obterNome($siape){
+      $sql="SELECT nomeCompleto FROM docente WHERE siape='$siape'";
+      $res = $this->selecionar($sql);
+      if ($res->num_rows > 0) {
+        while($row = $res->fetch_assoc()) {
+          return $row["nomeCompleto"];
+        }
+      }
+    }
   }
    ?>

@@ -18,7 +18,10 @@ class LoginModel{
     }
   }
 
-  
+public function obterNome($siape){
+  return $this->dao->obterNome($siape);
+}
+
   public function cadastrar($login){
     if (!$this->dao->existeSiape($login->getSiape())) {
         if ($this->dao->cadastrar($login)) {

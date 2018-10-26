@@ -35,7 +35,7 @@ public class GerenciaRedeD2D extends AsyncTask<String, String, List> {
     public WifiManager wifiManager = null;
     public int netID = -8888;
     public MainActivity app = null;
-    public static String SSID_WIFI_LOCAL = "TextWIn"; // Nome da Rede D2D
+    public static String SSID_WIFI_LOCAL = "DIDO"; // Nome da Rede D2D
     public static String PSK_WIFI_LOCAL = "123456789"; // Senha da Rede D2D
     public static boolean iTethering = false;
     public static String redeAtual = "";
@@ -107,7 +107,7 @@ public class GerenciaRedeD2D extends AsyncTask<String, String, List> {
                             // Procura uma rede TextWIn dentro das redes wifi escaneadas.
                             for (ScanResult result : apList) {
                                 if (result.SSID.contains(SSID_WIFI_LOCAL)) {
-                                    Log.d("TEXTWIN", "ENCONTROU A REDE - " + result.SSID);
+                                    Log.d("DIDO", "ENCONTROU A REDE - " + result.SSID);
                                     tmpConfig = new WifiConfiguration();
                                     tmpConfig.BSSID = result.BSSID;
                                     tmpConfig.SSID = "\"" + result.SSID + "\"";
@@ -128,11 +128,11 @@ public class GerenciaRedeD2D extends AsyncTask<String, String, List> {
                                 if (wifiManager.enableNetwork(netID, true)) {
                                     redeAtual = tmpConfig.SSID;
 
-                                    if (redeAtual.contains("TextWIn")) {
+                                    if (redeAtual.contains("DIDO")) {
                                         this.app.runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                app.getSupportActionBar().setTitle("TextWIn [STA - D2D]");
+                                                app.getSupportActionBar().setTitle("DIDO [STA - D2D]");
                                                 app.iniciaObterClientes();
                                             }
                                         });
@@ -142,7 +142,7 @@ public class GerenciaRedeD2D extends AsyncTask<String, String, List> {
                                         this.app.runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                app.getSupportActionBar().setTitle("TextWIn [STA - " + redeAtual + "]");
+                                                app.getSupportActionBar().setTitle("DIDO [STA - " + redeAtual + "]");
                                                 app.iniciaObterClientes();
                                             }
                                         });
@@ -163,18 +163,18 @@ public class GerenciaRedeD2D extends AsyncTask<String, String, List> {
                                     this.app.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            app.getSupportActionBar().setTitle("TextWIn [STA - SERVER]");
+                                            app.getSupportActionBar().setTitle("DIDO [STA - SERVER]");
                                         }
                                     });
                                 }
                             }
                             else {
 
-                                if (redeAtual.contains("TextWIn")) {
+                                if (redeAtual.contains("DIDO")) {
                                     this.app.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            app.getSupportActionBar().setTitle("TextWIn [STA - D2D]");
+                                            app.getSupportActionBar().setTitle("DIDO [STA - D2D]");
                                         }
                                     });
 
@@ -183,7 +183,7 @@ public class GerenciaRedeD2D extends AsyncTask<String, String, List> {
                                     this.app.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            app.getSupportActionBar().setTitle("TextWIn [STA - " + redeAtual + "]");
+                                            app.getSupportActionBar().setTitle("DIDO [STA - " + redeAtual + "]");
                                         }
                                     });
                                 }
@@ -220,7 +220,7 @@ public class GerenciaRedeD2D extends AsyncTask<String, String, List> {
                         this.app.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                app.getSupportActionBar().setTitle("TextWIn [AP - D2D]");
+                                app.getSupportActionBar().setTitle("DIDO [AP - D2D]");
                                 app.iniciaObterClientes();
                             }
                         });
@@ -239,7 +239,7 @@ public class GerenciaRedeD2D extends AsyncTask<String, String, List> {
                             this.app.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    app.getSupportActionBar().setTitle("TextWIn [AP - D2D]");
+                                    app.getSupportActionBar().setTitle("DIDO [AP - D2D]");
                                 }
                             });
                             dormir(1000);
@@ -257,15 +257,15 @@ public class GerenciaRedeD2D extends AsyncTask<String, String, List> {
                         this.app.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                app.getSupportActionBar().setTitle("TextWIn [STA - SERVER]");
+                                app.getSupportActionBar().setTitle("DIDO [STA - SERVER]");
                             }
                         });
                     }
-                    else if (redeAtual.contains("TextWIn")) {
+                    else if (redeAtual.contains("DIDO")) {
                         this.app.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                app.getSupportActionBar().setTitle("TextWIn [STA - D2D]");
+                                app.getSupportActionBar().setTitle("DIDO [STA - D2D]");
                             }
                         });
 
@@ -274,7 +274,7 @@ public class GerenciaRedeD2D extends AsyncTask<String, String, List> {
                         this.app.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                app.getSupportActionBar().setTitle("TextWIn [STA - " + redeAtual + "]");
+                                app.getSupportActionBar().setTitle("DIDO [STA - " + redeAtual + "]");
                             }
                         });
                     }

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#22afc6</color>
-    <color name="colorPrimaryDark">#008eae</color>
-    <color name="colorAccent">#0bacc1</color>
+    <color name="colorPrimary">#4daa61</color>
+    <color name="colorPrimaryDark">#378948</color>
+    <color name="colorAccent">#4daa61</color>
     <color name="CorNome">#000000</color>
     <color name="CorFundo">#979797</color>
     <color name="CorTexto">#404040</color>
     <color name="cOR">#8c8c8c</color>
+    <color name="branco">#ffffff</color>
+    <color name="chatBG">#e7fce1</color>
 </resources>

@@ -98,6 +98,17 @@ body, html {
   margin-top: 5%;
 }
 
+#pos{
+  text-align: right;
+}
+.sair{
+  margin:1vh;
+  font-family: 'eraser';
+  color: white;
+  font-size: 3vh;
+}
+
+
 @media (max-width: 768px) {
 
 	.formulario{

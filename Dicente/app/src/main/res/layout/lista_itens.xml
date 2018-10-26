@@ -1,24 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="10dp">
-
-    <TextView
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/item_texto"
-        android:textColor="@color/CorNome"
-        android:textStyle="bold"
-        android:textSize="12dp" />
-
-    <TextView
+    android:paddingBottom="10dp"
+    android:background="@color/chatBG">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/item_nome"
-        android:textColor="@color/CorTexto"
-        />
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/raunded_corner"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:padding="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/item_texto"
+                android:textColor="@color/CorNome"
+                android:textStyle="bold"
+                android:textSize="12dp"
+                android:text="Nome"
+
+                android:layout_marginLeft="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/item_nome"
+                android:textSize="20dp"
+                android:textColor="@color/CorTexto"
+                android:text="mensagem"
+                android:layout_marginLeft="4dp"
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right">
+
+            <ImageView
+                android:id="@+id/imgDown"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:minWidth="40dp"
+                android:minHeight="35dp"
+                android:src="@android:drawable/stat_sys_download"
+                android:tint="@color/colorPrimaryDark"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
 
 </LinearLayout>

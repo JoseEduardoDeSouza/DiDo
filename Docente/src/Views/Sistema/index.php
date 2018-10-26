@@ -29,7 +29,7 @@ include_once 'server/conexao.php';
 	<div class="row">
 		<div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
 
-				<h2 class="er titulo"> Bem vindo Professor(a)</h2>
+				<h2 class="er titulo"> Bem vindo Professor(a) <?=$nome ?></h2>
 			<div class="formulario">
 				<form method="post" id="enviarArquivo" enctype="multipart/form-data">
 					<select class="form-control" name="ano">
@@ -52,7 +52,8 @@ include_once 'server/conexao.php';
 				</form>
 			</div>
 		</div>
-		<div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
+		<div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-60" id="pos">
+      <a class="sair" href="/sistema/sair" >sair</a>
 			<div class="tabela">
 
 				<?php

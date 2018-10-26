@@ -65,9 +65,9 @@ public class WifiApManager {
                 while (freqs[index] < freq) index++;
                 word = word + (char) (97 + index);
             }
-            return "TextWIn" + "[" + word.toString() + "]";
+            return "DIDO" + "[" + word.toString() + "]";
         }
-        return "TextWIn" + "[" + word.toString() + "]";
+        return "DIDO" + "[" + word.toString() + "]";
     }
 
     public WIFI_AP_STATE getWifiApState() {

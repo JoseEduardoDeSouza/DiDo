@@ -2,11 +2,14 @@ package moblab.Principal.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -52,6 +55,7 @@ public class AdapterListView extends BaseAdapter {
             itemSuporte = new ItemSuporte();
             itemSuporte.nomeView = ((TextView) view.findViewById(R.id.item_nome));
             itemSuporte.textoView = ((TextView) view.findViewById(R.id.item_texto));
+            itemSuporte.down = ((ImageView) view.findViewById(R.id.imgDown));
 
             view.setTag(itemSuporte);
         }
@@ -61,14 +65,20 @@ public class AdapterListView extends BaseAdapter {
 
         ItemListView item = listaItens.get(i);
         if (item.isFile()){
-            itemSuporte.nomeView.setGravity(Gravity.RIGHT);
-            itemSuporte.nomeView.setTextColor(Color.GREEN);
-            itemSuporte.nomeView.setTextSize(8);
-            itemSuporte.textoView.setGravity(Gravity.RIGHT);
-            itemSuporte.textoView.setTextSize(8);
+            itemSuporte.nomeView.setTextSize(12);
+            itemSuporte.down.setVisibility(View.VISIBLE);
+
+            SpannableString content = new SpannableString(item.getNome());
+            content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+            itemSuporte.nomeView.setText(content);
+
+            itemSuporte.textoView.setText(item.getTexto());
+        }else{
+            itemSuporte.down.setVisibility(View.INVISIBLE);
+            itemSuporte.nomeView.setTextSize(20);
+            itemSuporte.nomeView.setText(item.getNome());
+            itemSuporte.textoView.setText(item.getTexto());
         }
-        itemSuporte.nomeView.setText(item.getNome());
-        itemSuporte.textoView.setText(item.getTexto());
 
         return view;
     }
@@ -76,5 +86,6 @@ public class AdapterListView extends BaseAdapter {
     private class ItemSuporte {
         public TextView textoView;
         public TextView nomeView;
+        public ImageView down;
     }
 }

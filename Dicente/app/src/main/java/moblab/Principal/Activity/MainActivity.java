@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     public static List<Arquivo> arquivos;
     public static AdapterListView adaptador; // Essa e o adaptador da lista do layout.
     public String nome = "SemNome"; // Essa variavel contem o nome do usuario.
-    public String IP = "http://192.168.1.107:8080";
+    public String IP = "http://10.42.0.1:8080";
     public String turmaId;
     public static boolean INTERNET = true;
     public static List<String> msgsMC = new ArrayList<>();
@@ -148,15 +148,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ItemListView item = (ItemListView) adapterView.getItemAtPosition(i);
-                if (statusArquivo(item.getNome())){
-                    Log.d("existe","foi");
-                }else{
+
                     if (item.isFile()){
-                        String urlDown = item.getUrl();
-                        String filename = item.getNome();
-                        startDownload(urlDown,filename);
+                        if (statusArquivo(item.getNome())){
+                            openFile(item.getNome());
+
+                        }else{
+                            String urlDown = item.getUrl();
+                            String filename = item.getNome();
+                            startDownload(urlDown,filename);
+                        }
                     }
-                }
+
             }
         });
 
@@ -168,16 +171,18 @@ public class MainActivity extends AppCompatActivity {
                 new IntentFilter(DownloadManager.ACTION_NOTIFICATION_CLICKED));
 
     }
-    public boolean statusArquivo(String name){
-        String path = Environment.getExternalStorageDirectory()+ "/" + downloadDirectory + turmaId;
-        Log.d("Files", "Path: " + path);
-        File directory = new File(path);
-        File[] files = directory.listFiles();
-        Log.d("Files", "Size: "+ files.length);
-        for (int i = 0; i < files.length; i++){
-            Log.d("Files", "FileName:" + files[i].getName());
+    public boolean statusArquivo(String name) {
+        File file = new File(Environment.getExternalStorageDirectory().getPath()+"/mounted/"+downloadDirectory+turmaId);
+
+        File[] files = file.listFiles();
+        Log.d("locais",Environment.getExternalStorageDirectory().getPath());
+        for (File f : files){
+            int tamanho = (f.getPath().split("/")).length;
+            if ((f.getPath().split("/"))[tamanho-1].equals(name)){
+                return true;
+            }
         }
-        return false;
+    return false;
     }
     //Download
 
@@ -238,10 +243,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void openFile(){
+    public void openFile(String name){
         File path = Environment.getExternalStoragePublicDirectory(Environment.getExternalStorageDirectory()
-                + "/" + downloadDirectory);
-        File file = new File(path, "test.pdf");
+                + "/mounted/" + downloadDirectory+turmaId);
+        File file = new File(path, name);
 
         Intent install = new Intent(Intent.ACTION_VIEW);
         install.setDataAndType(Uri.fromFile(file), "application/pdf");
@@ -311,7 +316,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private class GetFilesURLS extends AsyncTask<String, Integer, String> {
+        boolean continuar = true;
         protected String doInBackground(String... urls) {
+
+
             URL url = null;
             String content = "";
             try {
@@ -341,6 +349,7 @@ public class MainActivity extends AppCompatActivity {
 
             return content;
         }
+
 
         protected void onProgressUpdate(Integer... progress) {
         }
@@ -404,23 +413,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 ItemListView novoItem = new ItemListView(nome, mensagem);
+                novoItem.setFile(false);
                 MainActivity.listaItensView.add(novoItem);
-
-
-
-
-                //int index = listaView.getFirstVisiblePosition();
-                //View v = listaView.getChildAt(0);
-                //int top = (v == null) ? 0 : v.getTop();
-
-                // Atualiza a listView
                 adaptador = new AdapterListView(MainActivity.this, listaItensView);
                 listaView.setAdapter(adaptador);
                 listaView.setSelection(adaptador.getCount() - 1);
-                // listaView.setSelectionFromTop(listaItensView.size(), top);
-
-                                    /* Volta a visualizacao da lista para o itemView que ele estava visualizando antes de atualizar. */
-                //listaView.setSelectionFromTop(index, top);
             }//public void run() {
         });
     }
@@ -702,22 +699,16 @@ public class MainActivity extends AppCompatActivity {
                                 msgsMC.add(msg);
 
                                 ItemListView novoItem = new ItemListView(nome, mensagem);
+                                novoItem.setFile(false);
                                 listaItensView.add(novoItem);
 
                                 MainActivity.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        //int index = listaView.getFirstVisiblePosition();
-                                        //View v = listaView.getChildAt(0);
-                                        //int top = (v == null) ? 0 : v.getTop();
-
-                                        // Atualiza a listView
                                         adaptador = new AdapterListView(MainActivity.this, listaItensView);
                                         listaView.setAdapter(adaptador);
                                         // listaView.setSelectionFromTop(listaItensView.size(), top);
                                         listaView.setSelection(adaptador.getCount() - 1);
-                                    /* Volta a visualizacao da lista para o itemView que ele estava visualizando antes de atualizar. */
-                                        //listaView.setSelectionFromTop(index, top);
                                     }//public void run() {
                                 });
                             }

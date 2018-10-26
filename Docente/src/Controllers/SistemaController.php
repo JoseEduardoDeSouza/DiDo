@@ -5,7 +5,10 @@
   include_once('src/Entities/MensagemEntity.php');
   include_once('src/Models/TurmaModel.php');
   include_once('src/Models/ArquivoModel.php');
-    include_once('src/Models/MensagemModel.php');
+  include_once('src/Models/MensagemModel.php');
+
+  include_once('src/Models/LoginModel.php');
+
 class SistemaController{
 
   private $turmaModel;
@@ -14,16 +17,24 @@ class SistemaController{
     $this->turmaModel = new TurmaModel();
     $this->arquivoModel = new ArquivoModel();
     $this->mensagemModel = new MensagemModel();
+    $this->loginModel = new LoginModel();
   }
 
   public function index(){
     if (isset($_SESSION['siape'])) {
       $turmas = $this->turmaModel->obter();
+      $nome = $this->loginModel->obterNome($_SESSION['siape']);
       require_once 'src/Views/Sistema/index.php';
     }else{
       require_once 'src/Views/Login/index.php';
     }
 
+  }
+
+  public function sair(){
+    if(session_destroy()){
+    header("Location: /");
+    }
   }
 
 
@@ -98,7 +109,7 @@ class SistemaController{
     }
   }
   public function obterMensagens($params){
-      if ($this->arquivoModel->existencia($params["turma"])) {
+      if ($this->turmaModel->existencia($params["turma"])) {
         if ($this->mensagemModel->existenciaMSG($params["turma"])) {
           $mensagens = $this->mensagemModel->obterPorTurma($params["turma"]);
           $retorno = array();

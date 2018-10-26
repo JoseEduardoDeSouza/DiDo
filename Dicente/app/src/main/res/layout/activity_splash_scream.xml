@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="@color/branco"
     tools:context=".Activity.SplashScream">
 
-</android.support.constraint.ConstraintLayout>
+    <ImageView
+        android:id="@+id/didoSplash"
+        android:layout_width="476dp"
+        android:layout_height="349dp"
+        app:srcCompat="@mipmap/logoapp"
+        tools:layout_editor_absoluteX="144dp"
+        tools:layout_editor_absoluteY="217dp" />
+</LinearLayout>

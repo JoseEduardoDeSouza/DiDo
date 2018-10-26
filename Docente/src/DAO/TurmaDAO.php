@@ -31,6 +31,17 @@ class TurmaDAO extends BaseDAO{
     return $retorno;
   }
 
+  public function existencia($turma_id){
+    $sql = "SELECT id FROM turma WHERE id = $turma_id";
+
+    $res = $this->selecionar($sql);
+
+    if ($res->num_rows > 0) {
+      return true;
+    }
+    return false;
+  }
+
 }
 
 

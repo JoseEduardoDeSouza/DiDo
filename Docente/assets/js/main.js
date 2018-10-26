@@ -144,6 +144,14 @@ function cadArquivo(){
 
 
 
+
+
+
+
+
+
+
+
 // $( "#enviarArquivo" ).submit(function( event ) {
 //     event.preventDefault();
 //     $.ajax({

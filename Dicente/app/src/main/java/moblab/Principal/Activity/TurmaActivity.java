@@ -54,7 +54,8 @@ public class TurmaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_turma);
         this.listaView = (ListView) findViewById(R.id.turmalist);
         context = getApplicationContext();
-        new GetData().execute("http://192.168.1.107:8080/sistema/obterTurmas/");
+
+        new GetData().execute("http://10.42.0.1:8080/sistema/obterTurmas/");
         getSupportActionBar().setTitle("Selecione sua Turma.");
 
         listaView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

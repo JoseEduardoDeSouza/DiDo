@@ -16,6 +16,12 @@ class TurmaModel{
     }
     return false;
   }
+  public function existencia($turma){
+    if ($this->dao->existencia($turma)) {
+      return true;
+    }
+    return false;
+  }
   public function obter(){
     return $this->dao->obter();
     }
