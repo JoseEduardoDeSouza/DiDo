@@ -3,8 +3,8 @@
 * Orientador: Prof. Msc. Everton Fernando Baro / IFPR – Campus Avançado Goioerê
 * Orientador: Prof. Msc. Charles Tim Batista Garrocho / IFMG – Campus Ponte Nova
 * Banca: 
- Prof. Dr. José Mateus Bido / IFPR - Campus Avançado Goioerê
- Prof. Msc. Alison Antony Ribeiro / IFPR - Campus Avançado Goioerê
+ - Prof. Dr. José Mateus Bido / IFPR - Campus Avançado Goioerê
+ - Prof. Msc. Alison Antony Ribeiro / IFPR - Campus Avançado Goioerê
 
 
 # Resumo
